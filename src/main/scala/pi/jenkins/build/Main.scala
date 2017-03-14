@@ -47,13 +47,13 @@ object Main {
 
       def run(): Unit = {
 
-        val buildId = buildObserver.getLastBuildId()
+        val buildUrl = buildObserver.getLastBuildUrl()
 
-        buildObserver.getLastBuildStatus(buildId) match {
+        buildObserver.getLastBuildStatus(buildUrl) match {
           case JenkinsAdapter.BuildFailure ⇒
-            statusObserver.buildFailure(buildId)
+            statusObserver.buildFailure()
           case JenkinsAdapter.BuildSuccessful ⇒
-            statusObserver.buildSuccess(buildId)
+            statusObserver.buildSuccess()
         }
 
       }
@@ -63,20 +63,24 @@ object Main {
     val buildObserver: JenkinsBuildAdapter = if (!CLI.jenkinsUrl.isSupplied) {
       new JenkinsBuildAdapter {
 
+        override val baseUrl: String = ""
+
         var build = 0
 
-        override def getLastBuildId(): Int = build
+        override def getLastBuildUrl(): String = ""
 
-        override def getLastBuildStatus(id: Int): BuildStatus = {
-          build = id + 1
-          id % 2 match {
+        override def getLastBuildStatus(url: String): BuildStatus = {
+          build = build + 1
+          build % 2 match {
             case 0 ⇒ JenkinsAdapter.BuildSuccessful
             case 1 ⇒ JenkinsAdapter.BuildFailure
           }
         }
       }
     } else {
-      ???
+      new JenkinsBuildAdapter {
+        override val baseUrl: String = CLI.jenkinsUrl()
+      }
     }
 
     val piAdapter = if (CLI.usePi()) {
@@ -99,9 +103,9 @@ object Main {
     } else {
 
       new Observer {
-        override def buildFailure(buildId: Int): Unit = Console.err.println(s"Failed build ${buildId}")
+        override def buildFailure(): Unit = Console.err.println(s"Failed build")
 
-        override def buildSuccess(buildId: Int): Unit = Console.err.println(s"Successful build ${buildId}")
+        override def buildSuccess(): Unit = Console.err.println(s"Successful build")
       }
 
     }

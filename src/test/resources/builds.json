@@ -1,0 +1,7 @@
+{
+  "_class": "hudson.model.FreeStyleProject",
+  "lastBuild": {
+    "_class": "hudson.model.FreeStyleBuild",
+    "url": "https://example.jenkins/jenkins/job/project-build/103/"
+  }
+}

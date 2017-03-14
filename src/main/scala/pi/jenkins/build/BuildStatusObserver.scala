@@ -6,9 +6,9 @@ object BuildStatusObserver {
 
   trait Observer {
 
-    def buildSuccess(buildId: Int): Unit
+    def buildSuccess(): Unit
 
-    def buildFailure(buildId: Int): Unit
+    def buildFailure(): Unit
 
   }
 
@@ -18,12 +18,12 @@ object BuildStatusObserver {
 
     def pinFailure(): GpioPinDigitalOutput
 
-    override def buildSuccess(buildId: Int): Unit = {
+    override def buildSuccess(): Unit = {
       pinFailure().setState(PinState.LOW)
       pinSuccess().setState(PinState.HIGH)
     }
 
-    override def buildFailure(buildId: Int): Unit = {
+    override def buildFailure(): Unit = {
       pinFailure().setState(PinState.HIGH)
       pinSuccess().setState(PinState.LOW)
     }

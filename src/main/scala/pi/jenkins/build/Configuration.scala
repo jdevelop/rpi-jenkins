@@ -46,8 +46,6 @@ object Configuration {
 
   object Api {
 
-    lazy val Url = cfg.getString("pi.jenkins.api.url")
-
     lazy val Username = cfg.getString("pi.jenkins.api.username")
 
     lazy val AccessKey = cfg.getString("pi.jenkins.api.accesskey")
